@@ -1,0 +1,23 @@
+{
+  "name": "node",
+  "version": "1.0.0",
+  "description": "git add . => seleciona todas as alteracoes e adicona pre-commit git commit -m '' => contem as informacoes que seram alteradas git push => mada o commit para o git ou nuvem git pull => serve para baixar as aleracoes git branch nome => serve para criar git checkout nome -> navega entre as branchs git checkout -b nome -> trocar de branch criando ela git merge nome -> unifica as branchs git clome url -> Clona o repositorio que esta na nuvem",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "dev": "node --watch --no-warnings server.js"
+  },
+  "keywords": [],
+  "author": "João Miguel",
+  "license": "ISC",
+  "dependencies": {
+    "cookie": "^0.7.1",
+    "dotenv": "^16.4.5",
+    "fastify": "^3.0.0",
+    "fastify-cors": "^6.0.0",
+    "mongodb": "^6.8.0",
+    "postgres": "^3.4.4"
+  }
+}
