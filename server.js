@@ -1,14 +1,18 @@
 import fastify from 'fastify';
 import { DataBasePostgres } from './database-postgres.js';
 import cors from 'fastify-cors';
+import { sql } from './db.js'; // Importando a função sql
+import jwt from 'jsonwebtoken';
 
 const database = new DataBasePostgres();
 const server = fastify();
 
+// Configuração do CORS
 server.register(cors, {
-    origin: '*', 
+    origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
 });
+
 // Rotas para Pratos
 server.post("/pratos", async (request, reply) => {
     try {
@@ -35,7 +39,6 @@ server.put("/pratos/:id", async (request, reply) => {
         const pratosID = request.params.id;
         const { name, foto, description, price } = request.body;
 
-        // Verificar se o prato existe
         const pratoExistente = await database.getPratoById(pratosID);
         if (!pratoExistente) {
             return reply.status(404).send({ error: "Prato não encontrado" });
@@ -52,7 +55,6 @@ server.delete("/pratos/:id", async (request, reply) => {
     try {
         const pratosID = request.params.id;
 
-        // Verificar se o prato existe
         const pratoExistente = await database.getPratoById(pratosID);
         if (!pratoExistente) {
             return reply.status(404).send({ error: "Prato não encontrado" });
@@ -67,14 +69,24 @@ server.delete("/pratos/:id", async (request, reply) => {
 
 // Rotas para Clientes
 server.post("/cliente", async (request, reply) => {
+    const { nome, gmail, whats } = request.body;
+    console.log('Dados recebidos:', { nome, gmail, whats });
+
     try {
-        const { nome, gmail, whats } = request.body;
-        const idComanda = await database.getComandaId();
-        const idRestaurante = await database.getRestauranteId();
-        await database.createCliente({ nome, gmail, whats, idComanda, idRestaurante });
-        reply.status(201).send();
+        const existingClient = await sql`SELECT * FROM cliente WHERE gmail = ${gmail} OR whats = ${whats}`;
+        
+        if (existingClient.length > 0) {
+            return reply.status(400).send({ error: 'Cliente já cadastrado com este email ou telefone.' });
+        }
+
+        const result = await sql`INSERT INTO cliente (nome, gmail, whats) VALUES (${nome}, ${gmail}, ${whats})`;
+
+        // Gerar um token
+        const token = jwt.sign({ gmail }, '067773201a', { expiresIn: '1h' }); 
+        reply.send({ success: true, token });
     } catch (error) {
-        reply.status(500).send({ error: error.message });
+        console.error('Erro ao cadastrar cliente:', error);
+        reply.status(500).send({ error: 'Erro ao cadastrar cliente' });
     }
 });
 
@@ -93,7 +105,6 @@ server.put("/cliente/:id", async (request, reply) => {
         const usuarioID = request.params.id;
         const { nome, gmail, whats } = request.body;
 
-        // Verificar se o cliente existe
         const clienteExistente = await database.getClienteById(usuarioID);
         if (!clienteExistente) {
             return reply.status(404).send({ error: "Cliente não encontrado" });
@@ -110,7 +121,6 @@ server.delete("/cliente/:id", async (request, reply) => {
     try {
         const usuarioID = request.params.id;
 
-        // Verificar se o cliente existe
         const clienteExistente = await database.getClienteById(usuarioID);
         if (!clienteExistente) {
             return reply.status(404).send({ error: "Cliente não encontrado" });
@@ -149,7 +159,6 @@ server.put("/pedido/:id", async (request, reply) => {
         const pedidoID = request.params.id;
         const { quant, status, datapedid, valor_total, desc_pedido, pratosid } = request.body;
 
-        // Verificar se o pedido existe
         const pedidoExistente = await database.getPedidoById(pedidoID);
         if (!pedidoExistente) {
             return reply.status(404).send({ error: "Pedido não encontrado" });
@@ -166,7 +175,6 @@ server.delete("/pedido/:id", async (request, reply) => {
     try {
         const pedidoID = request.params.id;
 
-        // Verificar se o pedido existe
         const pedidoExistente = await database.getPedidoById(pedidoID);
         if (!pedidoExistente) {
             return reply.status(404).send({ error: "Pedido não encontrado" });
@@ -178,6 +186,7 @@ server.delete("/pedido/:id", async (request, reply) => {
         reply.status(500).send({ error: error.message });
     }
 });
+
 // Rota de Login
 server.post("/login", async (request, reply) => {
     try {

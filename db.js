@@ -1,7 +1,13 @@
-import postgres from 'postgres'
-import 'dotenv/config'
-const { PGHOST, PGDATABASE, PGUSER, PGPASSWORD, ENDPOINT_ID } = process.env;
-const URL = `postgres://${PGUSER}:${PGPASSWORD}@${PGHOST}/${PGDATABASE}?options=project%3D${ENDPOINT_ID}`
+import postgres from 'postgres';
+import 'dotenv/config'; // Carrega as variáveis do .env
 
+const { DATABASE_URL } = process.env;
 
-export const sql = postgres(URL, {ssl: 'require'}) 
+// Verifica se a variável DATABASE_URL está definida
+if (!DATABASE_URL) {
+  console.error('DATABASE_URL não está definida.');
+  process.exit(1); // Encerra o processo se faltar a variável
+}
+
+// Conexão com o banco usando a DATABASE_URL
+export const sql = postgres(DATABASE_URL, { ssl: 'require' });

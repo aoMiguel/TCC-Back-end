@@ -1,4 +1,5 @@
-import { sql } from "./db.js";
+import pkg from 'sql-tag';
+const { sql } = pkg;
 
 export class DataBasePostgres {
   // Criar Prato
@@ -9,7 +10,6 @@ export class DataBasePostgres {
       INSERT INTO Pratos (name, foto, description, price) 
       VALUES (${name}, ${foto}, ${description}, ${price})
     `;
-    
   }
 
   // Listar Pratos
@@ -45,16 +45,13 @@ export class DataBasePostgres {
     const idComanda = await this.getComandaId();
     const idRestaurante = await this.getRestauranteId();
 
-    console.log("idComanda:", idComanda);
-    console.log("idRestaurante:", idRestaurante);
-
     if (!idComanda || !idRestaurante) {
-      throw new Error("Comanda ou Restaurante não encontrados");
+      throw new Error("Comanda ou Restaurante não encontrados"); // Lançar erro para ser tratado no servidor
     }
 
     await sql`
       INSERT INTO Cliente (nome, gmail, whats, idComanda, idRestaurante) 
-      VALUES (${gmail},${nome}, ${whats}, ${idComanda}, ${idRestaurante})
+      VALUES (${nome}, ${gmail}, ${whats}, ${idComanda}, ${idRestaurante})
     `;
   }
 
@@ -82,14 +79,15 @@ export class DataBasePostgres {
   async deleteCliente(id) {
     await sql`DELETE FROM Cliente WHERE usuarioid = ${id}`;
   }
+
   // Login Cliente
-async loginCliente(gmail, nome, whats) {
+  async loginCliente(gmail, nome, whats) {
     const result = await sql`
-        SELECT * FROM Cliente 
-        WHERE gmail = ${gmail} AND nome = ${nome} AND whats = ${whats}
+      SELECT * FROM Cliente 
+      WHERE gmail = ${gmail} AND nome = ${nome} AND whats = ${whats}
     `;
     return result[0] || null;
-}
+  }
 
   // Criar Pedido
   async createPedido(pedido) {
@@ -202,14 +200,12 @@ async loginCliente(gmail, nome, whats) {
   }
 
   // Criar Comanda
-  // Dentro da classe DataBasePostgres
-async createComanda(usuarioid, pratosid, idRestaurante) {
-  await sql`
-    INSERT INTO Comanda (usuarioid, pratosid, idRestaurante) 
-    VALUES (${usuarioid}, ${pratosid}, ${idRestaurante});
-  `;
-}
-
+  async createComanda(usuarioid, pratosid, idRestaurante) {
+    await sql`
+      INSERT INTO Comanda (usuarioid, pratosid, idRestaurante) 
+      VALUES (${usuarioid}, ${pratosid}, ${idRestaurante});
+    `;
+  }
 
   // Listar Comandas
   async listComanda(search) {
@@ -244,16 +240,13 @@ async createComanda(usuarioid, pratosid, idRestaurante) {
 
   // Obter ID de Comanda
   async getComandaId() {
-    const result =
-      await sql`SELECT IDcomanda_num FROM Comanda ORDER BY IDcomanda_num DESC LIMIT 1`;
+    const result = await sql`SELECT IDcomanda_num FROM Comanda ORDER BY IDcomanda_num DESC LIMIT 1`;
     return result[0]?.IDcomanda_num;
   }
 
   // Obter ID de Restaurante
   async getRestauranteId() {
-    const result =
-      await sql`SELECT idRestaurante FROM Restaurante ORDER BY idRestaurante DESC LIMIT 1`;
+    const result = await sql`SELECT idRestaurante FROM Restaurante ORDER BY idRestaurante DESC LIMIT 1`;
     return result[0]?.idRestaurante;
   }
 }
-

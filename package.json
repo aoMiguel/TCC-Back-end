@@ -15,9 +15,11 @@
   "dependencies": {
     "cookie": "^0.7.1",
     "dotenv": "^16.4.5",
-    "fastify": "^3.0.0",
+    "fastify": "^3.29.5",
     "fastify-cors": "^6.0.0",
+    "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.8.0",
-    "postgres": "^3.4.4"
+    "postgres": "^3.4.4",
+    "sql-tag": "^1.0.1"
   }
 }

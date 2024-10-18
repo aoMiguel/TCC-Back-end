@@ -37,9 +37,9 @@ POST http://localhost:3333/cliente
 Content-Type: application/json
 
 {
-    "gmail": "joaomiguel.msbj@gmail.com",
-    "whats": "999601234",
-    "comanda": "123456"
+    "nome": "João Souza Silva",
+    "gmail": "teste@exemplo.us",
+    "whats": "3121286800"
 }
 
 ###

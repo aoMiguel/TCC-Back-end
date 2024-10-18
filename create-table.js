@@ -49,7 +49,7 @@ await sql`
         usuarioid        UUID PRIMARY KEY DEFAULT gen_random_uuid(),
         idComanda        UUID,
         idRestaurante    UUID,
-        nome             TEXT
+        nome             TEXT,  
         gmail            VARCHAR(255),
         whats            VARCHAR(20),
         FOREIGN KEY (idRestaurante) REFERENCES Restaurante(idRestaurante), 
@@ -77,6 +77,7 @@ await sql`
 `;
 
 console.log("A tabela Pedido foi criada com sucesso!");
+
 
 
 
