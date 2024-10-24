@@ -76,7 +76,7 @@ await sql`
     )
 `;
 
-console.log("A tabela Pedido foi criada com sucesso!");
+console.log("A tabela Pedido foi criada com sucesso! Seja feliz, deu certo!");
 
 
 

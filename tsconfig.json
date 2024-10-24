@@ -9,12 +9,11 @@
     "sourceMap": true
   },
   "include": [
-    "src/**/*",        
-    "../@types/**/*"     
+    "*.ts",       
+    "@types"
   ],
   "exclude": [
     "node_modules",
     "**/node_modules/*"
   ]
 }
-
