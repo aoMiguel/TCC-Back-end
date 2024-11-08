@@ -63,14 +63,20 @@ export class DataBasePostgres {
     `;
     return usuarios;
   }
-
+// Aqui há a função de pegar o id do cliente
+  async getClienteById(id) {
+    const cliente = await sql`
+      SELECT * FROM Cliente WHERE usuarioid = ${id}
+    `;
+    return cliente.length > 0 ? cliente[0] : null; 
+}
   // Atualizar Cliente
   async updateCliente(id, cliente) {
-    const { gmail, whats } = cliente;
+    const {nome, gmail, whats } = cliente;
 
     await sql`
       UPDATE Cliente 
-      SET gmail = ${gmail}, whats = ${whats} 
+      SET nome = ${nome}, gmail = ${gmail}, whats = ${whats} 
       WHERE usuarioid = ${id}
     `;
   }

@@ -48,18 +48,18 @@ GET http://localhost:3333/cliente
 
 ###
 
-PUT http://localhost:3333/cliente
+PUT http://localhost:3333/cliente/8d716137-c454-46f3-99a2-12578a33b669
 Content-Type: application/json
 
 {
+    "nome": "Leonardo",
     "gmail": "leonardokorb@gmail.com",
     "whats": "99958-1235"
 }
 
 ###
 
-DELETE http://localhost:3333/Cliente
-
+DELETE http://localhost:3333/cliente/
 ###
 
 

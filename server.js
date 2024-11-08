@@ -1,9 +1,8 @@
 import fastify from 'fastify';
 import { DataBasePostgres } from './database-postgres.js';
 import cors from 'fastify-cors';
-import { sql } from './db.js'; // Importando a função sql
+import {sql} from './db.js'; 
 import jwt from 'jsonwebtoken';
-
 const database = new DataBasePostgres();
 const server = fastify();
 
@@ -66,7 +65,7 @@ server.delete("/pratos/:id", async (request, reply) => {
         reply.status(500).send({ error: error.message });
     }
 });
-
+ 
 // Rotas para Clientes
 server.post("/cliente", async (request, reply) => {
     const { nome, gmail, whats } = request.body;
@@ -92,10 +91,10 @@ server.post("/cliente", async (request, reply) => {
 
 server.get("/cliente", async (request) => {
     try {
-        const search = request.query.search || '';
-        const usuarios = await database.listUsuarios(search);
-        return usuarios;
+        const clientes = await sql`SELECT * FROM cliente`;
+        return clientes;
     } catch (error) {
+        console.error('Erro ao buscar clientes:', error);
         return { error: error.message };
     }
 });
@@ -190,15 +189,20 @@ server.delete("/pedido/:id", async (request, reply) => {
 // Rota de Login
 server.post("/login", async (request, reply) => {
     try {
-        const { nome, gmail, whats } = request.body;
-        const usuario = await database.loginCliente(gmail, nome, whats);
-        if (usuario) {
-            reply.status(200).send({ message: "Login bem-sucedido", usuario });
+        const { gmail } = request.body;
+        
+        // Verifique se o cliente existe usando o gmail
+        const usuario = await sql`SELECT * FROM cliente WHERE gmail = ${gmail}`;
+        
+        if (usuario.length > 0) {
+            const token = jwt.sign({ gmail: usuario[0].gmail }, '067773201a', { expiresIn: '1h' });
+            reply.status(200).send({ message: "Login bem-sucedido", token });
         } else {
             reply.status(401).send({ message: "Credenciais inválidas" });
         }
     } catch (error) {
-        reply.status(500).send({ error: error.message });
+        console.error('Erro ao fazer login:', error);
+        reply.status(500).send({ error: 'Erro ao fazer login' });
     }
 });
 
