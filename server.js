@@ -207,15 +207,16 @@ server.post("/login", async (request, reply) => {
 });
 
 // Rotas para Restaurantes
-server.post("/restaurante", async (request, reply) => {
-    try {
+    server.post("/restaurante", async (request, reply) => {
         const { cnpj, nome, endereco, cep, cidade, bairro, num, compl, telefone, capacidade } = request.body;
-        await database.createRestaurante({ cnpj, nome, endereco, cep, cidade, bairro, num, compl, telefone, capacidade });
-        reply.status(201).send();
-    } catch (error) {
-        reply.status(500).send({ error: error.message });
-    }
-});
+    
+        try {
+            await database.createRestaurante({ cnpj, nome, endereco, cep, cidade, bairro, num, compl, telefone, capacidade });
+            reply.status(201).send();
+        } catch (error) {
+            reply.status(500).send({ error: error.message });
+        }
+    });
 
 server.get("/restaurante", async (request) => {
     try {
@@ -229,9 +230,15 @@ server.get("/restaurante", async (request) => {
 
 server.put("/restaurante/:id", async (request, reply) => {
     try {
-        const restID = request.params.id;
+        const restauranteID = request.params.id;
         const { cnpj, nome, endereco, cep, cidade, bairro, num, compl, telefone, capacidade } = request.body;
-        await database.updateRestaurante(restID, { cnpj, nome, endereco, cep, cidade, bairro, num, compl, telefone, capacidade });
+
+        const restauranteExistente = await database.getRestauranteById(restauranteID);
+        if (!restauranteExistente) {
+            return reply.status(404).send({ error: "Restaurante não encontrado" });
+        }
+
+        await database.updateRestaurante(restauranteID, { cnpj, nome, endereco, cep, cidade, bairro, num, compl, telefone, capacidade });
         reply.status(204).send();
     } catch (error) {
         reply.status(500).send({ error: error.message });
@@ -240,14 +247,19 @@ server.put("/restaurante/:id", async (request, reply) => {
 
 server.delete("/restaurante/:id", async (request, reply) => {
     try {
-        const restID = request.params.id;
-        await database.deleteRestaurante(restID);
+        const restauranteID = request.params.id;
+
+        const restauranteExistente = await database.getRestauranteById(restauranteID);
+        if (!restauranteExistente) {
+            return reply.status(404).send({ error: "Restaurante não encontrado" });
+        }
+
+        await database.deleteRestaurante(restauranteID);
         reply.status(204).send();
     } catch (error) {
         reply.status(500).send({ error: error.message });
     }
 });
-
 // Iniciar o servidor
 const start = async () => {
     try {

@@ -19,6 +19,7 @@
     "fastify-cors": "^6.0.0",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.8.0",
+    "pg": "^8.13.1",
     "pg-promise": "^11.10.1",
     "postgres": "^3.4.5",
     "sql-tag": "^1.0.1"

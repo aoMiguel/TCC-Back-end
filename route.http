@@ -38,8 +38,8 @@ Content-Type: application/json
 
 {
     "nome": "João Souza Silva",
-    "gmail": "teste@exemplo.us",
-    "whats": "3121286800"
+    "gmail": "testes@exemplo.us",
+    "whats": "3121286801"
 }
 
 ###
@@ -124,7 +124,7 @@ GET http://localhost:3333/restaurante
 
 ###
 
-PUT http://localhost:3333/restaurante
+PUT http://localhost:3333/restaurante/
 Content-Type: application/json
 
 {

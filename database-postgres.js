@@ -1,5 +1,4 @@
-import pkg from 'sql-tag';
-const { sql } = pkg;
+import sql from 'sql-tag';
 
 export class DataBasePostgres {
   // Criar Prato
@@ -163,10 +162,23 @@ export class DataBasePostgres {
       capacidade,
     } = restaurante;
 
-    await sql`
-      INSERT INTO Restaurante (cnpj, nome, endereco, cep, cidade, bairro, num, compl, telefone, capacidade) 
-      VALUES (${cnpj}, ${nome}, ${endereco}, ${cep}, ${cidade}, ${bairro}, ${num}, ${compl}, ${telefone}, ${capacidade})
-    `;
+    try {
+      // Verificação de dados antes da inserção
+      if (!cnpj || !nome || !endereco) {
+        throw new Error("Dados obrigatórios não fornecidos");
+      }
+
+      const result = await sql`
+        INSERT INTO Restaurante (cnpj, nome, endereco, cep, cidade, bairro, num, compl, telefone, capacidade) 
+        VALUES (${cnpj}, ${nome}, ${endereco}, ${cep}, ${cidade}, ${bairro}, ${num}, ${compl}, ${telefone}, ${capacidade})
+      `;
+      
+      console.log("Restaurante criado com sucesso:", restaurante);
+      console.log("Resultado da inserção:", result); // Log do resultado da inserção
+    } catch (error) {
+      console.error("Erro ao criar restaurante:", error);
+      throw new Error("Erro ao criar restaurante");
+    }
   }
 
   // Listar Restaurantes
@@ -204,6 +216,12 @@ export class DataBasePostgres {
   async deleteRestaurante(id) {
     await sql`DELETE FROM Restaurante WHERE idRestaurante = ${id}`;
   }
+  async getRestauranteById(id) {
+    const restaurante = await sql`
+        SELECT * FROM Restaurante WHERE idRestaurante = ${id}
+    `;
+    return restaurante.length > 0 ? restaurante[0] : null;
+}
 
   // Criar Comanda
   async createComanda(usuarioid, pratosid, idRestaurante) {

@@ -3,7 +3,7 @@ import 'dotenv/config';
 
 
 const { DATABASE_URL } = process.env;
-console.log(DATABASE_URL);
+
 
 if (!DATABASE_URL) {
   console.error('DATABASE_URL não está definida.');
