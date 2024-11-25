@@ -37,9 +37,9 @@ POST http://localhost:3333/cliente
 Content-Type: application/json
 
 {
-    "nome": "João Souza Silva",
-    "gmail": "testes@exemplo.us",
-    "whats": "3121286801"
+    "nome": "João Souza Silvas",
+    "gmail": "testesi@gmail.com",
+    "whats": "312128621217"
 }
 
 ###
@@ -106,16 +106,16 @@ POST http://localhost:3333/restaurante
 Content-Type: application/json
 
 {
-    "cnpj": "12345678901224",
-    "nome": "Restaurante b",
+    "cnpj": "12345678901229",
+    "nome": "Restaurante v",
     "endereco": "Rua Exemplo, 323",
-    "cep": "12345010",
-    "cidade": "São Joaquim",
-    "bairro": "Interior",
-    "num": "1223",
-    "compl": "ao lado da padaria",
-    "telefone": "21999999999",
-    "capacidade": "40"
+    "cep": "1234564",
+    "cidade": "São Joaquim do sul",
+    "bairro": "Interior de sp",
+    "num": 12,
+    "compl": "ao lado da padaria da rosa",
+    "telefone": "21999999449",
+    "capacidade": 40
 }
 
 ###
@@ -124,7 +124,7 @@ GET http://localhost:3333/restaurante
 
 ###
 
-PUT http://localhost:3333/restaurante/
+PUT http://localhost:3333/restaurante
 Content-Type: application/json
 
 {

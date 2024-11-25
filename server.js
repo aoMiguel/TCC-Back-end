@@ -220,8 +220,7 @@ server.post("/login", async (request, reply) => {
 
 server.get("/restaurante", async (request) => {
     try {
-        const search = request.query.search || '';
-        const restaurante = await database.listRestaurante(search);
+        const restaurante = await database.listRestaurante();
         return restaurante;
     } catch (error) {
         return { error: error.message };

@@ -62,16 +62,16 @@ export class DataBasePostgres {
     `;
     return usuarios;
   }
-// Aqui há a função de pegar o id do cliente
+  // Aqui há a função de pegar o id do cliente
   async getClienteById(id) {
     const cliente = await sql`
       SELECT * FROM Cliente WHERE usuarioid = ${id}
     `;
-    return cliente.length > 0 ? cliente[0] : null; 
-}
+    return cliente.length > 0 ? cliente[0] : null;
+  }
   // Atualizar Cliente
   async updateCliente(id, cliente) {
-    const {nome, gmail, whats } = cliente;
+    const { nome, gmail, whats } = cliente;
 
     await sql`
       UPDATE Cliente 
@@ -149,43 +149,50 @@ export class DataBasePostgres {
 
   // Criar Restaurante
   async createRestaurante(restaurante) {
-    const {
-      cnpj,
-      nome,
-      endereco,
-      cep,
-      cidade,
-      bairro,
-      num,
-      compl,
-      telefone,
-      capacidade,
-    } = restaurante;
+  const {
+    cnpj,
+    nome,
+    endereco,
+    cep,
+    cidade,
+    bairro,
+    num,
+    compl,
+    telefone,
+    capacidade,
+  } = restaurante;
 
-    try {
-      // Verificação de dados antes da inserção
-      if (!cnpj || !nome || !endereco) {
-        throw new Error("Dados obrigatórios não fornecidos");
-      }
-
-      const result = await sql`
-        INSERT INTO Restaurante (cnpj, nome, endereco, cep, cidade, bairro, num, compl, telefone, capacidade) 
-        VALUES (${cnpj}, ${nome}, ${endereco}, ${cep}, ${cidade}, ${bairro}, ${num}, ${compl}, ${telefone}, ${capacidade})
-      `;
-      
-      console.log("Restaurante criado com sucesso:", restaurante);
-      console.log("Resultado da inserção:", result); // Log do resultado da inserção
-    } catch (error) {
-      console.error("Erro ao criar restaurante:", error);
-      throw new Error("Erro ao criar restaurante");
+  try {
+    // Verificação de dados antes da inserção
+    if (!cnpj || !nome || !endereco) {
+      throw new Error("Dados obrigatórios não fornecidos");
     }
+
+    // Realizar a inserção no banco
+    const result = await sql`
+      INSERT INTO Restaurante (cnpj, nome, endereco, cep, cidade, bairro, num, compl, telefone, capacidade) 
+      VALUES (${cnpj}, ${nome}, ${endereco}, ${cep}, ${cidade}, ${bairro}, ${num}, ${compl}, ${telefone}, ${capacidade})
+    `;
+
+    // Verificar se a inserção foi bem-sucedida
+    console.log('Resultado da inserção:', result);
+    if (result && result.rowCount === 0) {
+      throw new Error("Falha ao inserir restaurante");
+    }
+
+    return { message: "Restaurante inserido com sucesso!" };
+
+  } catch (error) {
+    console.error("Erro ao executar o INSERT:", error);
+    console.error("Detalhes do erro:", error.stack);
+    throw new Error("Erro ao criar restaurante");
   }
+}
 
   // Listar Restaurantes
-  async listRestaurante(search) {
+  async listRestaurante() {
     const restaurante = await sql`
-      SELECT * FROM Restaurante 
-      WHERE nome ILIKE '%' || ${search} || '%'
+      SELECT * FROM Restaurante
     `;
     return restaurante;
   }
@@ -216,12 +223,6 @@ export class DataBasePostgres {
   async deleteRestaurante(id) {
     await sql`DELETE FROM Restaurante WHERE idRestaurante = ${id}`;
   }
-  async getRestauranteById(id) {
-    const restaurante = await sql`
-        SELECT * FROM Restaurante WHERE idRestaurante = ${id}
-    `;
-    return restaurante.length > 0 ? restaurante[0] : null;
-}
 
   // Criar Comanda
   async createComanda(usuarioid, pratosid, idRestaurante) {
