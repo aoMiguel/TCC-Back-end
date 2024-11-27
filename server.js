@@ -232,11 +232,6 @@ server.put("/restaurante/:id", async (request, reply) => {
         const restauranteID = request.params.id;
         const { cnpj, nome, endereco, cep, cidade, bairro, num, compl, telefone, capacidade } = request.body;
 
-        const restauranteExistente = await database.getRestauranteById(restauranteID);
-        if (!restauranteExistente) {
-            return reply.status(404).send({ error: "Restaurante não encontrado" });
-        }
-
         await database.updateRestaurante(restauranteID, { cnpj, nome, endereco, cep, cidade, bairro, num, compl, telefone, capacidade });
         reply.status(204).send();
     } catch (error) {
@@ -247,11 +242,6 @@ server.put("/restaurante/:id", async (request, reply) => {
 server.delete("/restaurante/:id", async (request, reply) => {
     try {
         const restauranteID = request.params.id;
-
-        const restauranteExistente = await database.getRestauranteById(restauranteID);
-        if (!restauranteExistente) {
-            return reply.status(404).send({ error: "Restaurante não encontrado" });
-        }
 
         await database.deleteRestaurante(restauranteID);
         reply.status(204).send();

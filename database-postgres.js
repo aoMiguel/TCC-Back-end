@@ -39,13 +39,17 @@ export class DataBasePostgres {
 
   // Criar Cliente
   async createCliente(cliente) {
-    const { nome, gmail, whats } = cliente;
+    const {
+      nome,
+      gmail,
+      whats
+    } = cliente;
 
     const idComanda = await this.getComandaId();
     const idRestaurante = await this.getRestauranteId();
 
     if (!idComanda || !idRestaurante) {
-      throw new Error("Comanda ou Restaurante não encontrados"); // Lançar erro para ser tratado no servidor
+      throw new Error("Comanda ou Restaurante não encontrados");
     }
 
     await sql`
@@ -149,52 +153,54 @@ export class DataBasePostgres {
 
   // Criar Restaurante
   async createRestaurante(restaurante) {
-  const {
-    cnpj,
-    nome,
-    endereco,
-    cep,
-    cidade,
-    bairro,
-    num,
-    compl,
-    telefone,
-    capacidade,
-  } = restaurante;
+    const {
+      cnpj,
+      nome,
+      endereco,
+      cep,
+      cidade,
+      bairro,
+      num,
+      compl,
+      telefone,
+      capacidade,
+    } = restaurante;
 
-  try {
-    // Verificação de dados antes da inserção
-    if (!cnpj || !nome || !endereco) {
-      throw new Error("Dados obrigatórios não fornecidos");
-    }
+    try {
+      // Verificação de dados antes da inserção
+      if (!cnpj || !nome || !endereco) {
+        throw new Error("Dados obrigatórios não fornecidos");
+      }
+   
 
-    // Realizar a inserção no banco
-    const result = await sql`
-      INSERT INTO Restaurante (cnpj, nome, endereco, cep, cidade, bairro, num, compl, telefone, capacidade) 
+
+      // Realizar a inserção no banco
+      await sql`
+      INSERT INTO Restaurante (cnpj, nome, endereco, cep, cidade, bairro, num, compl, telefone, capacidade)
       VALUES (${cnpj}, ${nome}, ${endereco}, ${cep}, ${cidade}, ${bairro}, ${num}, ${compl}, ${telefone}, ${capacidade})
+      RETURNING * 
     `;
-
-    // Verificar se a inserção foi bem-sucedida
-    console.log('Resultado da inserção:', result);
-    if (result && result.rowCount === 0) {
-      throw new Error("Falha ao inserir restaurante");
+    console.log("Inserção realizada com sucesso!");
+    } catch (error) {
+      console.error("Erro ao executar o INSERT:", error);
+      console.error("Detalhes do erro:", error.stack);
+      throw new Error("Erro ao criar restaurante");
     }
-
-    return { message: "Restaurante inserido com sucesso!" };
-
-  } catch (error) {
-    console.error("Erro ao executar o INSERT:", error);
-    console.error("Detalhes do erro:", error.stack);
-    throw new Error("Erro ao criar restaurante");
   }
-}
+
 
   // Listar Restaurantes
   async listRestaurante() {
-    const restaurante = await sql`
-      SELECT * FROM Restaurante
-    `;
-    return restaurante;
+    try {
+      const result = await sql`
+        SELECT * FROM Restaurante
+      `;
+      console.log("Resultado da consulta:", result);
+      return result;
+    } catch (error) {
+      console.error("Erro ao buscar restaurantes:", error);
+      throw new Error("Erro ao buscar restaurantes");
+    }
   }
 
   // Atualizar Restaurante

@@ -1,17 +1,15 @@
 {
   "compilerOptions": {
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "target": "ES2020",
-    "jsx": "react",
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "sourceMap": true
+    "target": "es6",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
   },
   "include": [
-    "*.ts",
-    "@types",
-    "database-postgres.js"
+    "Backend/**/*.ts",
+    "@types/**/*.d.ts"
   ],
   "exclude": [
     "node_modules",
