@@ -16,6 +16,7 @@ server.register(cors, {
 server.post("/pratos", async (request, reply) => {
     try {
         const { name, foto, description, price } = request.body;
+
         await database.createPrato({ name, foto, description, price });
         reply.status(201).send();
     } catch (error) {
@@ -25,8 +26,7 @@ server.post("/pratos", async (request, reply) => {
 
 server.get("/pratos", async (request) => {
     try {
-        const search = request.query.search || '';
-        const pratos = await database.listPratos(search);
+        const pratos = await database.listPratos();
         return pratos;
     } catch (error) {
         return { error: error.message };
@@ -78,7 +78,7 @@ server.post("/cliente", async (request, reply) => {
             return reply.status(400).send({ error: 'Cliente já cadastrado com este email ou telefone.' });
         }
 
-        const result = await sql`INSERT INTO cliente (nome, gmail, whats) VALUES (${nome}, ${gmail}, ${whats})`;
+        await sql`INSERT INTO cliente (nome, gmail, whats) VALUES (${nome}, ${gmail}, ${whats})`;
 
         // Gerar um token
         const token = jwt.sign({ gmail }, '067773201a', { expiresIn: '1h' }); 
@@ -249,7 +249,7 @@ server.delete("/restaurante/:id", async (request, reply) => {
         reply.status(500).send({ error: error.message });
     }
 });
-// Iniciar o servidor
+//Iniciar o servidor
 const start = async () => {
     try {
         await server.listen({ port: 3333 });

@@ -2,10 +2,10 @@ POST http://localhost:3333/pratos
 Content-Type: application/json
 
 {
-    "name": "barca de camarao",
-    "foto": "foto_barca.png",
-    "description": "esta barca contem camarao",
-    "price": 199
+    "name": "arroz com feijão",
+    "foto": "foto_arroz_feijão.png",
+    "description": "saudavel pratico e rapido",
+    "price": 30
 }
 
 ###
@@ -37,10 +37,12 @@ POST http://localhost:3333/cliente
 Content-Type: application/json
 
 {
-    "nome": "João Souza Silvas",
-    "gmail": "testesis@gmail.com",
-    "whats": "48999601266"
+    "nome": "João Souza Silvasis",
+    "gmail": "testesiss@gmail.com",
+    "whats": "4899943131197"
 }
+
+
 
 ###
 
@@ -48,7 +50,7 @@ GET http://localhost:3333/cliente
 
 ###
 
-PUT http://localhost:3333/cliente/
+PUT http://localhost:3333/cliente/6f84bfe1-f3a2-4b8a-8758-9d8925463e59
 Content-Type: application/json
 
 {

@@ -5,18 +5,22 @@ export class DataBasePostgres {
   async createPrato(prato) {
     const { name, foto, description, price } = prato;
 
-    await sql`
-      INSERT INTO Pratos (name, foto, description, price) 
-      VALUES (${name}, ${foto}, ${description}, ${price})
-    `;
+    try {
+      await sql`
+        INSERT INTO Pratos (name, foto, description, price) 
+        VALUES (${name}, ${foto}, ${description}, ${price})
+      `;
+      console.log("Prato criado com sucesso:", prato);
+    } catch (error) {
+      console.error("Erro ao criar prato:", error);
+      throw new Error("Erro ao criar prato");
+    }
   }
 
   // Listar Pratos
-  async listPratos(search) {
+  async listPratos() {
     const pratos = await sql`
       SELECT * FROM Pratos 
-      WHERE name ILIKE '%' || ${search} || '%' 
-      OR description ILIKE '%' || ${search} || '%'
     `;
     return pratos;
   }
@@ -25,16 +29,28 @@ export class DataBasePostgres {
   async updatePrato(id, prato) {
     const { name, foto, description, price } = prato;
 
-    await sql`
-      UPDATE Pratos 
-      SET name = ${name}, foto = ${foto}, description = ${description}, price = ${price}
-      WHERE pratosid = ${id}
-    `;
+    try {
+      await sql`
+        UPDATE Pratos 
+        SET name = ${name}, foto = ${foto}, description = ${description}, price = ${price}
+        WHERE pratosid = ${id}
+      `;
+      console.log("Prato atualizado com sucesso:", { id, prato });
+    } catch (error) {
+      console.error("Erro ao atualizar prato:", error);
+      throw new Error("Erro ao atualizar prato");
+    }
   }
 
   // Deletar Prato
   async deletePrato(id) {
-    await sql`DELETE FROM Pratos WHERE pratosid = ${id}`;
+    try {
+      await sql`DELETE FROM Pratos WHERE pratosid = ${id}`;
+      console.log("Prato deletado com sucesso:", id);
+    } catch (error) {
+      console.error("Erro ao deletar prato:", error);
+      throw new Error("Erro ao deletar prato");
+    }
   }
 
   // Criar Cliente
