@@ -14,7 +14,7 @@ GET http://localhost:3333/pratos
 
 ###
 
-PUT http://localhost:3333/pratos
+PUT http://localhost:3333/pratos/
 Content-Type: application/json
 
 {
@@ -26,7 +26,7 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3333/pratos
+DELETE http://localhost:3333/pratos/
 
 ###
 
@@ -37,9 +37,9 @@ POST http://localhost:3333/cliente
 Content-Type: application/json
 
 {
-    "nome": "João Souza Silvasis",
-    "gmail": "testesiss@gmail.com",
-    "whats": "4899943131197"
+    "nome": "João Souza Silvasiss",
+    "gmail": "joao@gmail.com",
+    "whats": "4899943144491"
 }
 
 
@@ -50,7 +50,7 @@ GET http://localhost:3333/cliente
 
 ###
 
-PUT http://localhost:3333/cliente/6f84bfe1-f3a2-4b8a-8758-9d8925463e59
+PUT http://localhost:3333/cliente/6040f782-914e-41b1-831b-52c1e9dd7ce0
 Content-Type: application/json
 
 {

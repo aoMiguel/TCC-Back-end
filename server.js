@@ -5,7 +5,7 @@ import {sql} from './db.js';
 import jwt from 'jsonwebtoken';
 const database = new DataBasePostgres();
 const server = fastify();
-
+  
 // Configuração do CORS
 server.register(cors, {
     origin: '*',
@@ -16,10 +16,12 @@ server.register(cors, {
 server.post("/pratos", async (request, reply) => {
     try {
         const { name, foto, description, price } = request.body;
-
+        
         await database.createPrato({ name, foto, description, price });
+
         reply.status(201).send();
     } catch (error) {
+        console.error("Erro ao criar prato:", error);
         reply.status(500).send({ error: error.message });
     }
 });
@@ -38,11 +40,6 @@ server.put("/pratos/:id", async (request, reply) => {
         const pratosID = request.params.id;
         const { name, foto, description, price } = request.body;
 
-        const pratoExistente = await database.getPratoById(pratosID);
-        if (!pratoExistente) {
-            return reply.status(404).send({ error: "Prato não encontrado" });
-        }
-
         await database.updatePrato(pratosID, { name, foto, description, price });
         reply.status(204).send();
     } catch (error) {
@@ -53,11 +50,6 @@ server.put("/pratos/:id", async (request, reply) => {
 server.delete("/pratos/:id", async (request, reply) => {
     try {
         const pratosID = request.params.id;
-
-        const pratoExistente = await database.getPratoById(pratosID);
-        if (!pratoExistente) {
-            return reply.status(404).send({ error: "Prato não encontrado" });
-        }
 
         await database.deletePrato(pratosID);
         reply.status(204).send();

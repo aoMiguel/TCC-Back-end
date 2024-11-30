@@ -1,20 +1,14 @@
-import sql from 'sql-tag';
+import {sql} from './db.js'; 
 
 export class DataBasePostgres {
+  
   // Criar Prato
   async createPrato(prato) {
-    const { name, foto, description, price } = prato;
-
-    try {
-      await sql`
+    const { name, foto, description, price } = prato; 
+    await sql`
         INSERT INTO Pratos (name, foto, description, price) 
         VALUES (${name}, ${foto}, ${description}, ${price})
       `;
-      console.log("Prato criado com sucesso:", prato);
-    } catch (error) {
-      console.error("Erro ao criar prato:", error);
-      throw new Error("Erro ao criar prato");
-    }
   }
 
   // Listar Pratos
@@ -30,7 +24,7 @@ export class DataBasePostgres {
     const { name, foto, description, price } = prato;
 
     try {
-      await sql`
+     await sql `
         UPDATE Pratos 
         SET name = ${name}, foto = ${foto}, description = ${description}, price = ${price}
         WHERE pratosid = ${id}
@@ -45,7 +39,7 @@ export class DataBasePostgres {
   // Deletar Prato
   async deletePrato(id) {
     try {
-      await sql`DELETE FROM Pratos WHERE pratosid = ${id}`;
+     await sql `DELETE FROM Pratos WHERE pratosid = ${id}`;
       console.log("Prato deletado com sucesso:", id);
     } catch (error) {
       console.error("Erro ao deletar prato:", error);
@@ -68,7 +62,7 @@ export class DataBasePostgres {
       throw new Error("Comanda ou Restaurante não encontrados");
     }
 
-    await sql`
+   await sql`
       INSERT INTO Cliente (nome, gmail, whats, idComanda, idRestaurante) 
       VALUES (${nome}, ${gmail}, ${whats}, ${idComanda}, ${idRestaurante})
     `;
@@ -93,7 +87,7 @@ export class DataBasePostgres {
   async updateCliente(id, cliente) {
     const { nome, gmail, whats } = cliente;
 
-    await sql`
+   await sql`
       UPDATE Cliente 
       SET nome = ${nome}, gmail = ${gmail}, whats = ${whats} 
       WHERE usuarioid = ${id}
@@ -102,7 +96,7 @@ export class DataBasePostgres {
 
   // Deletar Cliente
   async deleteCliente(id) {
-    await sql`DELETE FROM Cliente WHERE usuarioid = ${id}`;
+   await sql`DELETE FROM Cliente WHERE usuarioid = ${id}`;
   }
 
   // Login Cliente
@@ -127,7 +121,7 @@ export class DataBasePostgres {
       idRestaurante,
     } = pedido;
 
-    await sql`
+  await sql`
       INSERT INTO Pedido (quant, status, datapedid, valor_total, desc_pedido, pratosid, id_comanda_num, idRestaurante) 
       VALUES (${quant}, ${status}, ${datapedid}, ${valor_total}, ${desc_pedido}, ${pratosid}, ${id_comanda_num}, ${idRestaurante})
     `;
@@ -155,7 +149,7 @@ export class DataBasePostgres {
       idRestaurante,
     } = pedido;
 
-    await sql`
+   await sql`
       UPDATE Pedido 
       SET quant = ${quant}, status = ${status}, datapedid = ${datapedid}, valor_total = ${valor_total}, desc_pedido = ${desc_pedido}, pratosid = ${pratosid}, id_comanda_num = ${id_comanda_num}, idRestaurante = ${idRestaurante}
       WHERE pedidoID = ${id}
@@ -164,7 +158,7 @@ export class DataBasePostgres {
 
   // Deletar Pedido
   async deletePedido(id) {
-    await sql`DELETE FROM Pedido WHERE pedidoID = ${id}`;
+   await sql`DELETE FROM Pedido WHERE pedidoID = ${id}`;
   }
 
   // Criar Restaurante
@@ -191,7 +185,7 @@ export class DataBasePostgres {
 
 
       // Realizar a inserção no banco
-      await sql`
+     await sql`
       INSERT INTO Restaurante (cnpj, nome, endereco, cep, cidade, bairro, num, compl, telefone, capacidade)
       VALUES (${cnpj}, ${nome}, ${endereco}, ${cep}, ${cidade}, ${bairro}, ${num}, ${compl}, ${telefone}, ${capacidade})
       RETURNING * 
