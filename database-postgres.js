@@ -1,13 +1,13 @@
-import {sql} from './db.js'; 
+import { sql } from './db.js';
 
 export class DataBasePostgres {
-  
+
   // Criar Prato
   async createPrato(prato) {
-    const { name, foto, description, price } = prato; 
+    const { name, foto, description, price, tipoprato } = prato;
     await sql`
-        INSERT INTO Pratos (name, foto, description, price) 
-        VALUES (${name}, ${foto}, ${description}, ${price})
+        INSERT INTO Pratos (name, foto, description, price, tipoprato) 
+        VALUES (${name}, ${foto}, ${description}, ${price}, ${tipoprato})
       `;
   }
 
@@ -21,12 +21,12 @@ export class DataBasePostgres {
 
   // Atualizar Prato
   async updatePrato(id, prato) {
-    const { name, foto, description, price } = prato;
+    const { name, foto, description, price, tipoprato } = prato;
 
     try {
-     await sql `
+      await sql`
         UPDATE Pratos 
-        SET name = ${name}, foto = ${foto}, description = ${description}, price = ${price}
+        SET name = ${name}, foto = ${foto}, description = ${description}, price = ${price} tipoprato = ${tipoprato}
         WHERE pratosid = ${id}
       `;
       console.log("Prato atualizado com sucesso:", { id, prato });
@@ -39,7 +39,7 @@ export class DataBasePostgres {
   // Deletar Prato
   async deletePrato(id) {
     try {
-     await sql `DELETE FROM Pratos WHERE pratosid = ${id}`;
+      await sql`DELETE FROM Pratos WHERE pratosid = ${id}`;
       console.log("Prato deletado com sucesso:", id);
     } catch (error) {
       console.error("Erro ao deletar prato:", error);
@@ -49,24 +49,23 @@ export class DataBasePostgres {
 
   // Criar Cliente
   async createCliente(cliente) {
-    const {
-      nome,
-      gmail,
-      whats
-    } = cliente;
-
-    const idComanda = await this.getComandaId();
+    const { nome, gmail, whats } = cliente;
+  
+    // Obter o id do restaurante
     const idRestaurante = await this.getRestauranteId();
-
-    if (!idComanda || !idRestaurante) {
-      throw new Error("Comanda ou Restaurante não encontrados");
+  
+    // Verificar se o restaurante existe
+    if (!idRestaurante) {
+      throw new Error("Restaurante não encontrado");
     }
-
-   await sql`
-      INSERT INTO Cliente (nome, gmail, whats, idComanda, idRestaurante) 
-      VALUES (${nome}, ${gmail}, ${whats}, ${idComanda}, ${idRestaurante})
+  
+    // Criar cliente sem o idComanda
+    await sql`
+      INSERT INTO Cliente (nome, gmail, whats, idRestaurante) 
+      VALUES (${nome}, ${gmail}, ${whats}, ${idRestaurante})
     `;
   }
+  
 
   // Listar Clientes
   async listUsuarios(search) {
@@ -87,7 +86,7 @@ export class DataBasePostgres {
   async updateCliente(id, cliente) {
     const { nome, gmail, whats } = cliente;
 
-   await sql`
+    await sql`
       UPDATE Cliente 
       SET nome = ${nome}, gmail = ${gmail}, whats = ${whats} 
       WHERE usuarioid = ${id}
@@ -96,7 +95,7 @@ export class DataBasePostgres {
 
   // Deletar Cliente
   async deleteCliente(id) {
-   await sql`DELETE FROM Cliente WHERE usuarioid = ${id}`;
+    await sql`DELETE FROM Cliente WHERE usuarioid = ${id}`;
   }
 
   // Login Cliente
@@ -110,9 +109,8 @@ export class DataBasePostgres {
 
   // Criar Pedido
   async createPedido(pedido) {
+    
     const {
-      quant,
-      status,
       datapedid,
       valor_total,
       desc_pedido,
@@ -121,17 +119,17 @@ export class DataBasePostgres {
       idRestaurante,
     } = pedido;
 
-  await sql`
-      INSERT INTO Pedido (quant, status, datapedid, valor_total, desc_pedido, pratosid, id_comanda_num, idRestaurante) 
-      VALUES (${quant}, ${status}, ${datapedid}, ${valor_total}, ${desc_pedido}, ${pratosid}, ${id_comanda_num}, ${idRestaurante})
+    await sql`
+      INSERT INTO Pedido (datapedid, valor_total, desc_pedido, pratosid, id_comanda_num, idRestaurante) 
+      VALUES (${datapedid}, ${valor_total}, ${desc_pedido}, ${pratosid}, ${id_comanda_num}, ${idRestaurante})
     `;
   }
+
 
   // Listar Pedidos
   async listPedidos(search) {
     const pedidos = await sql`
-      SELECT * FROM Pedido 
-      WHERE desc_pedido ILIKE '%' || ${search} || '%'
+      SELECT * FROM Pedido
     `;
     return pedidos;
   }
@@ -139,26 +137,26 @@ export class DataBasePostgres {
   // Atualizar Pedido
   async updatePedido(id, pedido) {
     const {
-      quant,
       status,
       datapedid,
       valor_total,
       desc_pedido,
-      pratosid,
-      id_comanda_num,
-      idRestaurante,
     } = pedido;
 
-   await sql`
+    await sql`
       UPDATE Pedido 
-      SET quant = ${quant}, status = ${status}, datapedid = ${datapedid}, valor_total = ${valor_total}, desc_pedido = ${desc_pedido}, pratosid = ${pratosid}, id_comanda_num = ${id_comanda_num}, idRestaurante = ${idRestaurante}
+      SET 
+        status = ${status},
+        datapedid = ${datapedid},
+        valor_total = ${valor_total},
+        desc_pedido = ${desc_pedido}
       WHERE pedidoID = ${id}
     `;
   }
 
   // Deletar Pedido
   async deletePedido(id) {
-   await sql`DELETE FROM Pedido WHERE pedidoID = ${id}`;
+    await sql`DELETE FROM Pedido WHERE pedidoID = ${id}`;
   }
 
   // Criar Restaurante
@@ -181,16 +179,16 @@ export class DataBasePostgres {
       if (!cnpj || !nome || !endereco) {
         throw new Error("Dados obrigatórios não fornecidos");
       }
-   
+
 
 
       // Realizar a inserção no banco
-     await sql`
+      await sql`
       INSERT INTO Restaurante (cnpj, nome, endereco, cep, cidade, bairro, num, compl, telefone, capacidade)
       VALUES (${cnpj}, ${nome}, ${endereco}, ${cep}, ${cidade}, ${bairro}, ${num}, ${compl}, ${telefone}, ${capacidade})
       RETURNING * 
     `;
-    console.log("Inserção realizada com sucesso!");
+      console.log("Inserção realizada com sucesso!");
     } catch (error) {
       console.error("Erro ao executar o INSERT:", error);
       console.error("Detalhes do erro:", error.stack);
@@ -251,8 +249,7 @@ export class DataBasePostgres {
   // Listar Comandas
   async listComanda(search) {
     const comanda = await sql`
-      SELECT * FROM Comanda 
-      WHERE usuarioid::text ILIKE '%' || ${search} || '%'
+      SELECT * FROM Comanda
     `;
     return comanda;
   }

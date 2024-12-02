@@ -2,12 +2,12 @@ POST http://localhost:3333/pratos
 Content-Type: application/json
 
 {
-    "name": "arroz com feijão",
-    "foto": "foto_arroz_feijão.png",
-    "description": "saudavel pratico e rapido",
-    "price": 30
+    "name": "Bebida de limão",
+    "foto": "https://i.pinimg.com/736x/c1/c4/c1/c1c4c1385f9d625e840f6d213c5d9d66.jpg",
+    "description": "Bebida gelada",
+    "price": 3.50,
+    "tipoprato": "B"
 }
-
 ###
 
 GET http://localhost:3333/pratos
@@ -21,7 +21,9 @@ Content-Type: application/json
     "name": "temaki",
     "foto": "foto_temaki.png",
     "description": "temaki",
-    "price": 25
+    "price": 25,
+    "tipoprato": "D"
+    
 }
 
 ###
@@ -37,9 +39,9 @@ POST http://localhost:3333/cliente
 Content-Type: application/json
 
 {
-    "nome": "João Souza Silvasiss",
+    "nome": "João Souza Silvasis",
     "gmail": "joao@gmail.com",
-    "whats": "4899943144491"
+    "whats": "48999601234"
 }
 
 
@@ -50,7 +52,7 @@ GET http://localhost:3333/cliente
 
 ###
 
-PUT http://localhost:3333/cliente/6040f782-914e-41b1-831b-52c1e9dd7ce0
+PUT http://localhost:3333/cliente/
 Content-Type: application/json
 
 {
@@ -71,12 +73,15 @@ POST http://localhost:3333/pedido
 Content-Type: application/json
 
     {
-        "quant": 1,
-        "status": "n",
-        "datapedid": "2024-09-12T12:12:00",
-        "valor_total": 50.0,
-        "desc_pedido": "Pedido de sushi"
-    }
+    "quant": 1,
+    "status": "n",
+    "datapedid": "2024-09-12T12:12:00",
+    "valor_total": 50.0,
+    "desc_pedido": "Pedido de sushi",
+    "pratosid": "1c2c5397-9c09-45bf-b4b9-81d5dd1e71ba",         
+    "id_comanda_num": "95fa714c-7b26-4b67-a1cd-041b7eedc204",  
+    "idRestaurante": "7270890b-fbc8-4b7f-ad74-b4c10b94fef4"
+}
 
 ###
 
@@ -144,5 +149,16 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3333/restaurante
+DELETE http://localhost:3333/restaurante/
+
+###
+ 
+POST http://localhost:3333/comanda
+Content-Type: application/json
+
+   {
+    "usuarioid": "3620ba71-57e2-477a-b143-84ce1eca883b",
+    "pratosid": "1c2c5397-9c09-45bf-b4b9-81d5dd1e71ba",
+    "idRestaurante": "7270890b-fbc8-4b7f-ad74-b4c10b94fef4"
+   }
 
