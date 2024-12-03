@@ -127,9 +127,17 @@ server.delete("/cliente/:id", async (request, reply) => {
 // Rotas para Pedidos
 server.post("/pedido", async (request, reply) => {
     try {
-        const { quant, status, datapedid, valor_total, desc_pedido, pratosid, id_comanda_num, idRestaurante } = request.body;
+        console.log(request.body.itens)
+        const { quant, status, datapedid, valor_total, desc_pedido, idRestaurante } = request.body;
+       // const usuarioID = request.params.idusuario;
+        const pedidoId = await database.createPedido({ quant, status, datapedid, valor_total, desc_pedido, idRestaurante });
+       // await database.createComanda({ usuarioID, pedidoId, idRestaurante })
+
         
-        await database.createPedido({ quant, status, datapedid, valor_total, desc_pedido,pratosid, id_comanda_num, idRestaurante });
+     //   for await (const item of request.body.itens) {
+     //       const { pratosid } = item;
+     // createItemPedido({ pratosid, pedidoid });
+     //    }
         reply.status(201).send();
     } catch (error) {
         reply.status(500).send({ error: error.message });
@@ -178,6 +186,24 @@ server.post("/login", async (request, reply) => {
 
         if (usuario.length > 0) {
             const token = jwt.sign({ gmail: usuario[0].gmail }, '067773201a', { expiresIn: '1h' });
+            reply.status(200).send({ message: "Login bem-sucedido", token });
+        } else {
+            reply.status(401).send({ message: "Credenciais inválidas" });
+        }
+    } catch (error) {
+        console.error('Erro ao fazer login:', error);
+        reply.status(500).send({ error: 'Erro ao fazer login' });
+    }
+});
+server.post("/loginderestaurante", async (request, reply) => {
+    try {
+        const { cnpj } = request.body;
+
+        // Verifique se o cliente existe usando o cnpj
+        const usuario = await sql`SELECT * FROM Restaurante WHERE cnpj = ${cnpj}`;
+
+        if (usuario.length > 0) {
+            const token = jwt.sign({ cnpj: usuario[0].cnpj }, '067773201a', { expiresIn: '1h' });
             reply.status(200).send({ message: "Login bem-sucedido", token });
         } else {
             reply.status(401).send({ message: "Credenciais inválidas" });
@@ -250,25 +276,6 @@ server.post("/comanda", async (request, reply) => {
     }
 });
 
-
-server.post("/loginderestaurante", async (request, reply) => {
-    try {
-        const { cnpj } = request.body;
-
-        // Verifique se o cliente existe usando o cnpj
-        const usuario = await sql`SELECT * FROM restaurante WHERE cnpj = ${cnpj}`;
-
-        if (usuario.length > 0) {
-            const token = jwt.sign({ cnpj: usuario[0].cnpj }, '067773201a', { expiresIn: '1h' });
-            reply.status(200).send({ message: "Login bem-sucedido", token });
-        } else {
-            reply.status(401).send({ message: "Credenciais inválidas" });
-        }
-    } catch (error) {
-        console.error('Erro ao fazer login:', error);
-        reply.status(500).send({ error: 'Erro ao fazer login' });
-    }
-});
 //Iniciar o servidor
 const start = async () => {
     try {

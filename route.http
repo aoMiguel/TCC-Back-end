@@ -3,11 +3,12 @@ Content-Type: application/json
 
 {
     "name": "Bebida de limão",
-    "foto": "https://i.pinimg.com/736x/c1/c4/c1/c1c4c1385f9d625e840f6d213c5d9d66.jpg",
+    "foto": "https://i.pinimg.com/736x/d9/35/2f/d9352f8cf0023ef14f1f73e70f668ebe.jpg",
     "description": "Bebida gelada",
-    "price": 3.50,
-    "tipoprato": "B"
+    "price": 22.50,
+    "tipoprato": "E"
 }
+
 ###
 
 GET http://localhost:3333/pratos
@@ -102,7 +103,7 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3333/pedido
+DELETE http://localhost:3333/pedido/
 
 ###
 
@@ -149,7 +150,7 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3333/restaurante/
+DELETE http://localhost:3333/restaurante/75abb852-340f-4138-b05e-8a239679b525
 
 ###
  

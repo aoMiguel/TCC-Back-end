@@ -121,8 +121,12 @@ export class DataBasePostgres {
 
     await sql`
       INSERT INTO Pedido (datapedid, valor_total, desc_pedido, pratosid, id_comanda_num, idRestaurante) 
-      VALUES (${datapedid}, ${valor_total}, ${desc_pedido}, ${pratosid}, ${id_comanda_num}, ${idRestaurante})
+      VALUES (${datapedid}, ${valor_total}, ${desc_pedido}, '1c2c5397-9c09-45bf-b4b9-81d5dd1e71ba','95fa714c-7b26-4b67-a1cd-041b7eedc204', ${idRestaurante})
     `;
+    // const pedidoId = await sql`
+      //SELECT Max(pedidoID) as pedidoId FROM Pedido
+    //`;
+    //return pedidoId[0].pedidoId;
   }
 
 
@@ -239,10 +243,10 @@ export class DataBasePostgres {
   }
 
   // Criar Comanda
-  async createComanda(usuarioid, pratosid, idRestaurante) {
+  async createComanda(usuarioid, pedidoid, idRestaurante) {
     await sql`
-      INSERT INTO Comanda (usuarioid, pratosid, idRestaurante) 
-      VALUES (${usuarioid}, ${pratosid}, ${idRestaurante});
+      INSERT INTO Comanda (usuarioid, pedidoid, idRestaurante) 
+      VALUES (${usuarioid}, ${pedidoid}, ${idRestaurante});
     `;
   }
 
