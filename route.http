@@ -23,7 +23,7 @@ Content-Type: application/json
     "foto": "foto_temaki.png",
     "description": "temaki",
     "price": 25,
-    "tipoprato": "D"
+    "tipoprato": "P"
     
 }
 

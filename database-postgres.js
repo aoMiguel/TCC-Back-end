@@ -26,7 +26,7 @@ export class DataBasePostgres {
     try {
       await sql`
         UPDATE Pratos 
-        SET name = ${name}, foto = ${foto}, description = ${description}, price = ${price} tipoprato = ${tipoprato}
+        SET name = ${name}, foto = ${foto}, description = ${description}, price = ${price}, tipoprato = ${tipoprato}
         WHERE pratosid = ${id}
       `;
       console.log("Prato atualizado com sucesso:", { id, prato });
