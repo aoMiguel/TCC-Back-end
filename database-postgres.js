@@ -108,28 +108,33 @@ export class DataBasePostgres {
   }
 
   // Criar Pedido
-  async createPedido(pedido) {
-    
+  async createPedido(pedido) {    
     const {
       datapedid,
       valor_total,
       desc_pedido,
-      pratosid,
-      id_comanda_num,
       idRestaurante,
     } = pedido;
-
-    await sql`
-      INSERT INTO Pedido (datapedid, valor_total, desc_pedido, pratosid, id_comanda_num, idRestaurante) 
-      VALUES (${datapedid}, ${valor_total}, ${desc_pedido}, '1c2c5397-9c09-45bf-b4b9-81d5dd1e71ba','95fa714c-7b26-4b67-a1cd-041b7eedc204', ${idRestaurante})
+    const [pedidoNovo] = await sql`
+      INSERT INTO Pedido (datapedid, valor_total, desc_pedido, idRestaurante) 
+      VALUES (${datapedid}, ${valor_total}, ${desc_pedido}, ${idRestaurante})
+      RETURNING pedidoID
     `;
-    // const pedidoId = await sql`
-      //SELECT Max(pedidoID) as pedidoId FROM Pedido
-    //`;
-    //return pedidoId[0].pedidoId;
+   return pedidoNovo.pedidoid
   }
 
-
+async createItemPedido(item) {
+  const {
+    idPedido,
+    idPrato
+  } = item;
+  await sql`
+    INSERT INTO item_pedido (idPedido, idPrato) 
+    VALUES (${idPedido}, ${idPrato})
+  `;
+  // const itemPedido = await sql`SELECT pedidoID  FROM Pedido`;
+  // return pedido[0].pedidoId;
+}
   // Listar Pedidos
   async listPedidos(search) {
     const pedidos = await sql`
@@ -243,10 +248,10 @@ export class DataBasePostgres {
   }
 
   // Criar Comanda
-  async createComanda(usuarioid, pedidoid, idRestaurante) {
+  async createComanda(usuarioid, idPedido, idRestaurante) {
     await sql`
-      INSERT INTO Comanda (usuarioid, pedidoid, idRestaurante) 
-      VALUES (${usuarioid}, ${pedidoid}, ${idRestaurante});
+      INSERT INTO Comanda (usuarioid, idPedido, idRestaurante) 
+      VALUES (${usuarioid}, ${idPedido}, ${idRestaurante});
     `;
   }
 

@@ -127,19 +127,21 @@ server.delete("/cliente/:id", async (request, reply) => {
 // Rotas para Pedidos
 server.post("/pedido", async (request, reply) => {
     try {
-        console.log(request.body.itens)
-        const { quant, status, datapedid, valor_total, desc_pedido, idRestaurante } = request.body;
-       // const usuarioID = request.params.idusuario;
-        const pedidoId = await database.createPedido({ quant, status, datapedid, valor_total, desc_pedido, idRestaurante });
-       // await database.createComanda({ usuarioID, pedidoId, idRestaurante })
-
+        const { quant, status, datapedid, valor_total, desc_pedido, idRestaurante, usuarioID } = request.body;
+        const token = request.headers.authorization
+        const { gmail } = jwt.decode(token, { json: true});
+        const [cliente] = await sql`SELECT usuarioid FROM cliente WHERE gmail = ${gmail}`
         
-     //   for await (const item of request.body.itens) {
-     //       const { pratosid } = item;
-     // createItemPedido({ pratosid, pedidoid });
-     //    }
+        // const usuarioID = request.params.idusuario;
+        const pedidoId = await database.createPedido({ quant, status, datapedid, valor_total, desc_pedido, idRestaurante });
+        await database.createComanda(cliente.usuarioid, pedidoId, idRestaurante)
+        for await (const item of request.body.itens) {
+            const { pratosid } = item;
+            await database.createItemPedido({ idPedido: pedidoId, idPrato: pratosid });
+        }
         reply.status(201).send();
     } catch (error) {
+        console.error(error)
         reply.status(500).send({ error: error.message });
     }
 });
@@ -156,9 +158,9 @@ server.get("/pedido", async (request) => {
 server.put("/pedido/:id", async (request, reply) => {
     try {
         const pedidoID = request.params.id;
-        const { quant, status, datapedid, valor_total, desc_pedido} = request.body;
+        const { quant, status, datapedid, valor_total, desc_pedido } = request.body;
 
-        await database.updatePedido(pedidoID, { quant, status, datapedid, valor_total, desc_pedido});
+        await database.updatePedido(pedidoID, { quant, status, datapedid, valor_total, desc_pedido });
         reply.status(204).send();
     } catch (error) {
         reply.status(500).send({ error: error.message });
@@ -224,7 +226,7 @@ server.post("/restaurante", async (request, reply) => {
         // Gerar um token
         const token = jwt.sign({ cnpj }, '067773201a', { expiresIn: '1h' });
         reply.send({ success: true, token });
-        
+
     } catch (error) {
         reply.status(500).send({ error: error.message });
     }
