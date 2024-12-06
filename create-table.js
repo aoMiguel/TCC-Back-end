@@ -36,7 +36,6 @@ await sql`
 CREATE TABLE Cliente (
     usuarioid        UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     idComanda        UUID, 
-    idRestaurante    UUID,
     nome             TEXT,  
     gmail            VARCHAR(255),
     whats            VARCHAR(20),
