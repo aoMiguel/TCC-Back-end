@@ -50,22 +50,22 @@ export class DataBasePostgres {
   // Criar Cliente
   async createCliente(cliente) {
     const { nome, gmail, whats } = cliente;
-  
+
     // Obter o id do restaurante
     const idRestaurante = await this.getRestauranteId();
-  
+
     // Verificar se o restaurante existe
     if (!idRestaurante) {
       throw new Error("Restaurante não encontrado");
     }
-  
+
     // Criar cliente sem o idComanda
     await sql`
       INSERT INTO Cliente (nome, gmail, whats, idRestaurante) 
       VALUES (${nome}, ${gmail}, ${whats}, ${idRestaurante})
     `;
   }
-  
+
 
   // Listar Clientes
   async listUsuarios(search) {
@@ -108,7 +108,7 @@ export class DataBasePostgres {
   }
 
   // Criar Pedido
-  async createPedido(pedido) {    
+  async createPedido(pedido) {
     const {
       datapedid,
       valor_total,
@@ -120,21 +120,21 @@ export class DataBasePostgres {
       VALUES (${datapedid}, ${valor_total}, ${desc_pedido}, ${idRestaurante})
       RETURNING pedidoID
     `;
-   return pedidoNovo.pedidoid
+    return pedidoNovo.pedidoid
   }
 
-async createItemPedido(item) {
-  const {
-    idPedido,
-    idPrato
-  } = item;
-  await sql`
+  async createItemPedido(item) {
+    const {
+      idPedido,
+      idPrato
+    } = item;
+    await sql`
     INSERT INTO item_pedido (idPedido, idPrato) 
     VALUES (${idPedido}, ${idPrato})
   `;
-  // const itemPedido = await sql`SELECT pedidoID  FROM Pedido`;
-  // return pedido[0].pedidoId;
-}
+    // const itemPedido = await sql`SELECT pedidoID  FROM Pedido`;
+    // return pedido[0].pedidoId;
+  }
   // Listar Pedidos
   async listPedidos(search) {
     const pedidos = await sql`
@@ -145,23 +145,21 @@ async createItemPedido(item) {
 
   // Atualizar Pedido
   async updatePedido(id, pedido) {
-    const {
-      status,
-      datapedid,
-      valor_total,
-      desc_pedido,
-    } = pedido;
-
-    await sql`
-      UPDATE Pedido 
-      SET 
-        status = ${status},
-        datapedid = ${datapedid},
-        valor_total = ${valor_total},
-        desc_pedido = ${desc_pedido}
-      WHERE pedidoID = ${id}
-    `;
+    const { status } = pedido; // Somente o status será necessário para a atualização.
+  
+    try {
+      // Atualiza apenas o status
+      await sql`
+        UPDATE Pedido 
+        SET status = ${status}
+        WHERE pedidoID = ${id}
+      `;
+    } catch (error) {
+      console.error('Erro ao atualizar pedido no banco:', error);
+      throw new Error('Erro ao atualizar pedido no banco de dados');
+    }
   }
+  
 
   // Deletar Pedido
   async deletePedido(id) {

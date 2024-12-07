@@ -157,16 +157,24 @@ server.get("/pedido", async (request) => {
 
 server.put("/pedido/:id", async (request, reply) => {
     try {
-        const pedidoID = request.params.id;
-        const { quant, status, datapedid, valor_total, desc_pedido } = request.body;
-
-        await database.updatePedido(pedidoID, { quant, status, datapedid, valor_total, desc_pedido });
-        reply.status(204).send();
+      const pedidoID = request.params.id;
+      const { status } = request.body;
+  
+      if (!status || status.length !== 1) {
+        return reply.status(400).send({ error: 'O campo "status" deve ser um único caractere' });
+      }
+  
+      // Atualiza apenas o status do pedido
+      await database.updatePedido(pedidoID, { status });
+  
+      reply.status(204).send(); // Resposta de sucesso sem corpo
     } catch (error) {
-        reply.status(500).send({ error: error.message });
+      console.error('Erro ao atualizar pedido:', error);
+      reply.status(500).send({ error: error.message });
     }
-});
-
+  });
+  
+  
 server.delete("/pedido/:id", async (request, reply) => {
     try {
         const pedidoID = request.params.id;
